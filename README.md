@@ -36,6 +36,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 ├── config.py              # App configuration
 └── ffmpeg.exe             # (for portable EXE)         
 ```
+
 ---
 
 ## 🛠️ Requirements
@@ -75,15 +76,10 @@ python app.py
 The GUI allows you to:
 
 - Select a video file
-
 - Toggle Generate SRT
-
 - Toggle Burn subtitles into video
-
 - Customize subtitle style (font, size, color)
-
 - View real-time progress (percentage)
-
 - Automatically save output files
 
 ## 📂 Output Files
@@ -110,28 +106,20 @@ The executable will be generated in the dist/ folder.
 ## ⚠️ Notes & Limitations
 
 - Processing time depends on video length and hardware
-
 - GPU acceleration is not enabled by default
-
 - FFmpeg must be installed separately
-
 - Long videos may require significant memory
 
 ## 🚀 Future Improvements
 
 - GPU (CUDA) acceleration
-
 - Batch processing for multiple videos
-
 - Multi-language subtitle output
-
 - Web-based interface
 
 ## 🙌 Acknowledgements
 
 - Faster-Whisper (OpenAI Whisper)
-
 - FFmpeg
-
 - MoviePy
 
