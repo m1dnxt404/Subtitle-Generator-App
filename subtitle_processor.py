@@ -1,4 +1,4 @@
-from faster_whisper import WhisperModel
+import Whisper
 from moviepy.editor import VideoFileClip
 import pysrt
 import os
@@ -12,7 +12,7 @@ def generate_subtitles(video_path, progress_callback):
     audio_path = "temp_audio.wav"
     video.audio.write_audiofile(audio_path, logger=None)
 
-    model = WhisperModel(MODEL_SIZE, device="cpu", compute_type="int8")
+    model = Whisper(MODEL_SIZE, device="cpu", compute_type="int8")
     segments, info = model.transcribe(audio_path, task="translate", beam_size=5)
 
     srt_path = os.path.splitext(video_path)[0] + ".srt"

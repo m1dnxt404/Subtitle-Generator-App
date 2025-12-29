@@ -50,7 +50,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 ## ⚙️ 1️⃣ Install Dependencies
 
 ```bash
-pip install faster-whisper
+pip install openai-whisper
 ```
 
 ```bash
@@ -119,6 +119,6 @@ The executable will be generated in the dist/ folder.
 
 ## 🙌 Acknowledgements
 
-- Faster-Whisper (OpenAI Whisper)
+- OpenAI Whisper
 - FFmpeg
 - MoviePy
