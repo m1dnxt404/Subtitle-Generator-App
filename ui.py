@@ -1,8 +1,10 @@
+from logging import root
 import tkinter as tk
 from tkinter import ttk, messagebox
 from video_selector import select_video
 from subtitle_processor import generate_subtitles
 from video_burner import burn_subtitles
+from config import SUBTITLE_STYLE
 import threading
 
 class SubtitleUI:
@@ -39,6 +41,18 @@ class SubtitleUI:
         self.percent = tk.Label(root, text="0%")
         self.percent.pack()
 
+        # ---- STYLE CONTROLS ----
+        style_frame = tk.LabelFrame(root, text="Subtitle Style")
+        style_frame.pack(pady=10)
+
+        tk.Label(style_frame, text="Font Size").grid(row=0, column=0, padx=5)
+        self.font_size = tk.IntVar(value=28)
+        tk.Spinbox(style_frame, from_=16, to=60, textvariable=self.font_size, width=5).grid(row=0, column=1)
+        tk.Label(style_frame, text="Position").grid(row=0, column=2, padx=10)
+        
+        self.position = tk.StringVar(value="Bottom")
+        tk.OptionMenu(style_frame, self.position, "Bottom", "Top").grid(row=0, column=3)
+
     def on_select(self):
         self.video_path = select_video(self.video_label, lambda: self.start_btn.config(state="normal"))
 
@@ -58,6 +72,9 @@ class SubtitleUI:
         try:
             srt_path, language = generate_subtitles(self.video_path, self.update_progress)
             if self.burn.get():
+                SUBTITLE_STYLE["font_size"] = self.font_size.get()
+                SUBTITLE_STYLE["alignment"] = 2 if self.position.get() == "Bottom" else 8
+
                 burn_subtitles(self.video_path, srt_path)
             messagebox.showinfo("Success", f"Done!\nDetected language: {language}")
         except Exception as e:
