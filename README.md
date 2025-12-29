@@ -122,4 +122,3 @@ The executable will be generated in the dist/ folder.
 - Faster-Whisper (OpenAI Whisper)
 - FFmpeg
 - MoviePy
-
