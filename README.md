@@ -64,6 +64,10 @@ pip install pysrt
 pip install pyinstaller
 ```
 
+```bash
+pip install tdqm
+```
+
 ## ▶️ Running the Application
 
 ```bash

@@ -1,4 +1,3 @@
-from email.mime import base
 import whisper
 from moviepy import VideoFileClip
 import pysrt
