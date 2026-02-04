@@ -4,8 +4,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 
 ✔ Supports any spoken language  
 ✔ Uses AI speech recognition  
-✔ GUI for desktop usage  
-✔ Dockerized CLI for automation  
+✔ GUI for desktop usage   
 ✔ Portable Windows `.exe` support  
 
 ---
