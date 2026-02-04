@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(du:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(where.exe:*)",
+      "Bash(dir \"C:\\\\ffmpeg\")",
+      "Bash(dir \"C:\\\\Program Files\\\\ffmpeg\")"
+    ]
+  }
+}
