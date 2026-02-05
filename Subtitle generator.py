@@ -1,8 +1,12 @@
+
+import tkinter as tk
+from tkinter import filedialog, messagebox
 import whisper
 from moviepy import VideoFileClip
 import pysrt
 import os
 from tqdm import tqdm
+import threading
 
 # ==============================
 # CONFIGURATION
