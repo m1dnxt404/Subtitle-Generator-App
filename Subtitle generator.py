@@ -24,13 +24,18 @@ MODEL_SIZE = "base"
 print("🧠 Loading Whisper model...")
 model = whisper.load_model(MODEL_SIZE)
 
-
+# ==============================
+# EXTRACT AUDIO FROM VIDEO
+# ==============================
 print("Extracting audio...")
 video = VideoFileClip(VIDEO_PATH)
 audio_path = "temp_audio.wav"
 video.audio.write_audiofile(audio_path)
 video.close()
 
+# ==============================
+# TRANSCRIBE & TRANSLATE
+# ==============================
 print("Transcribing & translating...")
 result = model.transcribe(
     audio_path,
@@ -39,6 +44,10 @@ result = model.transcribe(
     verbose=True        # 👈 Shows progress during transcription
 )
 
+
+# ==============================
+# CREATE SRT FILE
+# ==============================
 subs = pysrt.SubRipFile()
 index = 1
 
@@ -61,5 +70,5 @@ for segment in tqdm(result["segments"], desc="Writing subtitles"):
 subs.save(OUTPUT_SRT, encoding="utf-8")
 os.remove(audio_path)
 
-print("✅ Subtitles generated:", OUTPUT_SRT)
-print("Detected language:", result["language"])
+print("✅ SRT file created:", OUTPUT_SRT)
+print("🌍 Detected language:", result["language"])
