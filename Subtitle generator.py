@@ -4,10 +4,16 @@ import pysrt
 import os
 from tqdm import tqdm
 
-VIDEO_FILE = "test.flv"
-OUTPUT_SRT = "testflv.srt"
+# ==============================
+# CONFIGURATION
+# ==============================
+VIDEO_PATH = "input_video.mp4"
+OUTPUT_SRT = "output_subtitles.srt"
+MODEL_SIZE = "base"  
 
-# Load Whisper model
+# ==============================
+# LOAD WHISPER MODEL
+# ==============================
 # Model	 | Parameters  | Relative Speed |
 #--------|-------------|----------------|
 # tiny	 | 39M	       | Fastest        |
@@ -15,11 +21,12 @@ OUTPUT_SRT = "testflv.srt"
 # small	 | 244M	       | Moderate       |
 # medium | 769M	       | Slow           |
 # large	 | 1550M	   | Slowest        |
-model = whisper.load_model("base")
+print("🧠 Loading Whisper model...")
+model = whisper.load_model(MODEL_SIZE)
 
 
 print("Extracting audio...")
-video = VideoFileClip(VIDEO_FILE)
+video = VideoFileClip(VIDEO_PATH)
 audio_path = "temp_audio.wav"
 video.audio.write_audiofile(audio_path)
 video.close()
