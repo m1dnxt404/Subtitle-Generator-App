@@ -6,7 +6,8 @@
       "Bash(ffmpeg:*)",
       "Bash(where.exe:*)",
       "Bash(dir \"C:\\\\ffmpeg\")",
-      "Bash(dir \"C:\\\\Program Files\\\\ffmpeg\")"
+      "Bash(dir \"C:\\\\Program Files\\\\ffmpeg\")",
+      "Bash(del \"c:\\\\Users\\\\HP\\\\Documents\\\\Programming\\\\PYTHON\\\\Subtitle Generator App\\\\subtitle_engine.py\")"
     ]
   }
 }
