@@ -6,11 +6,11 @@
 # medium  | 769M        | Slow           |
 # large   | 1550M       | Slowest        |
 MODEL_OPTIONS = {
-    "tiny (39M - Fastest)": "tiny",
+    "tiny (39M - Fastest/least Accurate)": "tiny",
     "base (74M - Fast)": "base",
     "small (244M - Moderate)": "small",
     "medium (769M - Slow)": "medium",
-    "large (1550M - Slowest)": "large",
+    "large (1550M - Slowest/Most Accurate)": "large",
 }
 
 SUPPORTED_VIDEO_FORMATS = "*.mp4 *.mkv *.avi *.mov *.flv *.wmv *.webm *.m4v *.mpg *.mpeg *.3gp *.ts"
