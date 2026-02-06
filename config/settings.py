@@ -5,6 +5,7 @@
 # small   | 244M        | Moderate       |
 # medium  | 769M        | Slow           |
 # large   | 1550M       | Slowest        |
+
 MODEL_OPTIONS = {
     "tiny (39M - Fastest/least Accurate)": "tiny",
     "base (74M - Fast)": "base",
