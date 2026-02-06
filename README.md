@@ -1,22 +1,24 @@
 # 🎬 AI Subtitle Generator & Translator
 
-A Python application that automatically **generates subtitles (SRT)** from any video, **translates them into English**, and optionally **burns the subtitles into the video**.
+A Python application that automatically **generates subtitles (SRT)** from any video, **translates them into 16+ languages**, and optionally **burns the subtitles into the video**.
 
-✔ Supports any spoken language  
-✔ Uses AI speech recognition  
-✔ GUI for desktop usage   
-✔ Portable Windows `.exe` support  
+✔ Supports any spoken language
+✔ Uses AI speech recognition (OpenAI Whisper)
+✔ Translate to English, Spanish, French, Japanese, and more
+✔ GUI for desktop usage
+✔ Portable Windows `.exe` support
 
 ---
 
 ## ✨ Features
 
 - 🎧 Automatic speech-to-text
-- 🌍 Auto language detection + translation to English
+- 🌍 Auto language detection + translation to 16+ languages
 - 📄 Generates `.srt` subtitle files
-- 🎥 Burns subtitles directly into video
-- 🎨 Custom subtitle styling (font, size, color)
+- 🎥 Burns subtitles directly into video (via FFmpeg)
+- 🔤 Choose target language from a dropdown
 - 📊 Determinate progress bar (percentage)
+- 🛑 Stop process at any time
 - 🖥 GUI (Tkinter)
 - 🪟 Portable Windows executable (no installation required)
 
@@ -29,73 +31,102 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 ├── subtitle_gui.py              # GUI layout, event handlers & entry point
 ├── config/
 │   ├── __init__.py              # Re-exports settings
-│   └── settings.py              # App constants (models, formats, window)
+│   └── settings.py              # App constants (models, formats, languages)
 ├── subtitle_engine/
-    ├── __init__.py              # Re-exports SubtitleEngine
-    ├── engine.py                # Orchestrator - runs the full pipeline
-    ├── audio.py                 # Audio extraction from video
-    ├── transcribe.py            # Whisper model loading & transcription
-    ├── srt.py                   # SRT subtitle file generation
-    └── burn.py                  # FFmpeg subtitle burning into video
+│   ├── __init__.py              # Re-exports SubtitleEngine
+│   ├── engine.py                # Orchestrator - runs the full pipeline
+│   ├── audio.py                 # Audio extraction from video
+│   ├── transcribe.py            # Whisper model loading & transcription
+│   ├── translate.py             # Post-translation via Google Translate
+│   ├── srt.py                   # SRT subtitle file generation
+│   └── burn.py                  # FFmpeg subtitle burning into video
+└── Subtitle generator.py        # Standalone CLI script
 ```
 
 ---
 
 ## 🛠️ Requirements
 
-- Install Python **3.10 or higher**
+- Python **3.10 or higher**
 - FFmpeg installed and available in system PATH
 - Windows / Linux / macOS
 
 ---
 
-## ⚙️ 1️⃣ Install Dependencies
+## ⚙️ Install Dependencies
 
 ```bash
-pip install openai-whisper
+pip install openai-whisper moviepy pysrt deep-translator
 ```
 
-```bash
-pip install moviepy
-```
-
-```bash
-pip install pysrt
-```
+Optional (for building a portable `.exe`):
 
 ```bash
 pip install pyinstaller
 ```
 
-```bash
-pip install tdqm
-```
+---
 
 ## ▶️ Running the Application
 
 ```bash
-python app.py
+python subtitle_gui.py
 ```
+
+---
 
 ## 🖥 GUI Capabilities
 
 The GUI allows you to:
 
-- Select a video file
-- Toggle Generate SRT
-- Toggle Burn subtitles into video
-- Customize subtitle style (font, size, color)
+- Select a video file (mp4, mkv, avi, mov, flv, wmv, webm, m4v, mpg, mpeg, 3gp, ts)
+- Choose a Whisper model size (tiny → large)
+- Choose a target language (English, Spanish, French, etc.)
+- Toggle **Generate SRT file**
+- Toggle **Burn subtitles into video**
+- Or select **both** at the same time
 - View real-time progress (percentage)
-- Automatically save output files
+- Stop the process at any time
+
+---
+
+## 🌍 Supported Languages
+
+| Language | Code |
+| --- | --- |
+| English | en |
+| Spanish | es |
+| French | fr |
+| German | de |
+| Portuguese | pt |
+| Italian | it |
+| Russian | ru |
+| Chinese (Simplified) | zh-CN |
+| Japanese | ja |
+| Korean | ko |
+| Arabic | ar |
+| Hindi | hi |
+| Turkish | tr |
+| Dutch | nl |
+| Polish | pl |
+| Original (No Translation) | — |
+
+- **English** uses Whisper's built-in translation (best quality)
+- **Original** keeps the spoken language as-is (no translation)
+- **Other languages** translate via Google Translate (requires `deep-translator`)
+
+---
 
 ## 📂 Output Files
 
-After processing, the following files may be generated in the same folder as the video:
+After processing, the following files may be generated in the output folder (or same folder as the video):
 
 ```bash
-video_name.srt
-video_name_with_subs.mp4
+video_name.srt                # Subtitle file
+video_name_subtitled.mp4      # Video with burned-in subtitles
 ```
+
+---
 
 ## 🪟 Create Portable Windows EXE
 
@@ -104,27 +135,35 @@ You can package the application into a portable Windows executable using PyInsta
 ### Build EXE
 
 ```bash
-pyinstaller --onefile --windowed app.py
+pyinstaller --onefile --windowed subtitle_gui.py
 ```
 
-The executable will be generated in the dist/ folder.
+The executable will be generated in the `dist/` folder.
+
+---
 
 ## ⚠️ Notes & Limitations
 
 - Processing time depends on video length and hardware
 - GPU acceleration is not enabled by default
-- FFmpeg must be installed separately
+- FFmpeg must be installed separately for burning subtitles
 - Long videos may require significant memory
+- Non-English target languages require an internet connection (Google Translate)
+
+---
 
 ## 🚀 Future Improvements
 
 - GPU (CUDA) acceleration
 - Batch processing for multiple videos
-- Multi-language subtitle output
+- Custom subtitle styling (font, size, color)
 - Web-based interface
+
+---
 
 ## 🙌 Acknowledgements
 
-- OpenAI Whisper
-- FFmpeg
-- MoviePy
+- [OpenAI Whisper](https://github.com/openai/whisper)
+- [FFmpeg](https://ffmpeg.org/)
+- [MoviePy](https://zulko.github.io/moviepy/)
+- [deep-translator](https://github.com/nidhaloff/deep-translator)
