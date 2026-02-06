@@ -2,11 +2,10 @@
 
 A Python application that automatically **generates subtitles (SRT)** from any video, **translates them into 16+ languages**, and optionally **burns the subtitles into the video**.
 
-✔ Supports any spoken language
-✔ Uses AI speech recognition (OpenAI Whisper)
-✔ Translate to English, Spanish, French, Japanese, and more
-✔ GUI for desktop usage
-✔ Portable Windows `.exe` support
+- Supports any spoken language
+- Uses AI speech recognition (OpenAI Whisper)
+- Translate to English, Spanish, French, Japanese, and more
+- GUI for desktop usage
 
 ---
 
