@@ -3,8 +3,7 @@ from tkinter import filedialog, messagebox, ttk
 import os
 import sys
 import threading
-
-from config import MODEL_OPTIONS, SUPPORTED_VIDEO_FORMATS, WINDOW_TITLE, WINDOW_SIZE
+from config import MODEL_OPTIONS, SUPPORTED_VIDEO_FORMATS, WINDOW_TITLE, WINDOW_SIZE, LANGUAGE_OPTIONS
 from subtitle_engine import SubtitleEngine
 
 
@@ -23,6 +22,7 @@ class SubtitleApp:
         self._build_header()
         self._build_file_selection()
         self._build_model_selector()
+        self._build_language_selector()
         self._build_output_options()
         self._build_generate_button()
         self._build_progress_section()
@@ -99,6 +99,22 @@ class SubtitleApp:
             width=30
         )
         self.model_combo.pack(side="left")
+
+    def _build_language_selector(self):
+        lang_frame = tk.Frame(self.root)
+        lang_frame.pack(pady=(0, 10))
+
+        tk.Label(lang_frame, text="Translate to:").pack(side="left", padx=(0, 5))
+
+        self.lang_var = tk.StringVar(value="English")
+        self.lang_combo = ttk.Combobox(
+            lang_frame,
+            textvariable=self.lang_var,
+            values=list(LANGUAGE_OPTIONS.keys()),
+            state="readonly",
+            width=30
+        )
+        self.lang_combo.pack(side="left")
 
     def _build_output_options(self):
         options_frame = tk.LabelFrame(
@@ -287,6 +303,7 @@ class SubtitleApp:
                 video_path=self.video_path,
                 model_size=MODEL_OPTIONS[self.model_var.get()],
                 srt_path=srt_path,
+                target_language=LANGUAGE_OPTIONS[self.lang_var.get()],
                 output_video_path=output_video_path if do_burn else None,
                 do_srt=do_srt,
                 do_burn=do_burn
@@ -315,6 +332,7 @@ class SubtitleApp:
         self.srt_check.config(state=state)
         self.burn_check.config(state=state)
         self.model_combo.config(state=combo_state)
+        self.lang_combo.config(state=combo_state)
         self.stop_btn.config(state=stop_state)
 
         if locked:

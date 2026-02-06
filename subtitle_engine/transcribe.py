@@ -16,21 +16,35 @@ def load_model(model_size, progress_callback=None, stop_check=None):
     return model
 
 
-def transcribe(model, audio_path, progress_callback=None, stop_check=None):
-    """Transcribe and translate audio to English using a loaded Whisper model."""
+def transcribe(model, audio_path, target_language="en",
+               progress_callback=None, stop_check=None):
+    """Transcribe audio using a loaded Whisper model.
+
+    Args:
+        target_language: "original" keeps the spoken language as-is,
+                         "en" uses Whisper's built-in translate-to-English,
+                         any other code triggers transcribe (then translate later).
+    """
+    if target_language == "original":
+        task = "transcribe"
+        status = "Transcribing (original language)..."
+    else:
+        task = "translate"
+        status = "Transcribing & translating to English..."
+
     if progress_callback:
-        progress_callback(25, "Transcribing & translating...")
-    print("Transcribing & translating...")
+        progress_callback(25, status)
+    print(status)
 
     result = model.transcribe(
         audio_path,
-        task="translate",
+        task=task,
         beam_size=5,
         verbose=True
     )
 
     if progress_callback:
-        progress_callback(70)
+        progress_callback(60)
     if stop_check and stop_check():
         raise InterruptedError("Process stopped by user.")
     return result

@@ -26,14 +26,18 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 
 ```graphql
 │
-├── app.py                 # Main entry point (UI startup)
-├── ui.py                  # UI layout & widgets
-├── video_selector.py      # Video file selection logic
-├── subtitle_processor.py  # Whisper + SRT generation logic
-├── video_burner.py        # FFmpeg subtitle burning logic
-├── progress.py            # Progress bar updater
-├── config.py              # App configuration
-└── ffmpeg.exe             # (for portable EXE)         
+├── subtitle_gui.py              # GUI layout, event handlers & entry point
+├── config/
+│   ├── __init__.py              # Re-exports settings
+│   └── settings.py              # App constants (models, formats, window)
+├── subtitle_engine/
+│   ├── __init__.py              # Re-exports SubtitleEngine
+│   ├── engine.py                # Orchestrator - runs the full pipeline
+│   ├── audio.py                 # Audio extraction from video
+│   ├── transcribe.py            # Whisper model loading & transcription
+│   ├── srt.py                   # SRT subtitle file generation
+│   └── burn.py                  # FFmpeg subtitle burning into video
+└── Subtitle generator.py        # Standalone CLI script
 ```
 
 ---

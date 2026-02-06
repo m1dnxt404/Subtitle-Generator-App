@@ -2,6 +2,7 @@ import os
 
 from .audio import extract_audio
 from .transcribe import load_model, transcribe
+from .translate import translate_segments
 from .srt import build_srt
 from .burn import burn_subtitles
 
@@ -20,8 +21,14 @@ class SubtitleEngine:
         self.stop_check = stop_check
 
     def generate(self, video_path, model_size, srt_path,
-                 output_video_path=None, do_srt=True, do_burn=False):
+                 target_language="en", output_video_path=None,
+                 do_srt=True, do_burn=False):
         """Run the full generation pipeline.
+
+        Args:
+            target_language: "en" for English (Whisper built-in),
+                             "original" to keep spoken language,
+                             any other lang code for post-translation.
 
         Returns:
             (srt_path or None, output_video_path or None, detected_language)
@@ -33,7 +40,11 @@ class SubtitleEngine:
         try:
             extract_audio(video_path, audio_path, cb, sc)
             model = load_model(model_size, cb, sc)
-            result = transcribe(model, audio_path, cb, sc)
+            result = transcribe(model, audio_path, target_language, cb, sc)
+
+            # Post-translate if target is not English and not original
+            if target_language not in ("en", "original"):
+                translate_segments(result["segments"], target_language, cb, sc)
 
             build_srt(result["segments"], srt_path, cb, sc)
 

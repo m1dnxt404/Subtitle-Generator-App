@@ -13,7 +13,26 @@ MODEL_OPTIONS = {
     "large (1550M - Slowest)": "large",
 }
 
-SUPPORTED_VIDEO_FORMATS = "*.mp4 *.mkv *.avi *.mov *.flv"
+SUPPORTED_VIDEO_FORMATS = "*.mp4 *.mkv *.avi *.mov *.flv *.wmv *.webm *.m4v *.mpg *.mpeg *.3gp *.ts"
 
-WINDOW_TITLE = "Video Subtitle Generator (Translate to English)"
-WINDOW_SIZE = "550x670"
+LANGUAGE_OPTIONS = {
+    "English": "en",
+    "Original (No Translation)": "original",
+    "Spanish": "es",
+    "French": "fr",
+    "German": "de",
+    "Portuguese": "pt",
+    "Italian": "it",
+    "Russian": "ru",
+    "Chinese (Simplified)": "zh-CN",
+    "Japanese": "ja",
+    "Korean": "ko",
+    "Arabic": "ar",
+    "Hindi": "hi",
+    "Turkish": "tr",
+    "Dutch": "nl",
+    "Polish": "pl",
+}
+
+WINDOW_TITLE = "Video Subtitle Generator"
+WINDOW_SIZE = "550x710"
