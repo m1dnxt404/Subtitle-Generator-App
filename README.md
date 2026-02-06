@@ -31,13 +31,12 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 │   ├── __init__.py              # Re-exports settings
 │   └── settings.py              # App constants (models, formats, window)
 ├── subtitle_engine/
-│   ├── __init__.py              # Re-exports SubtitleEngine
-│   ├── engine.py                # Orchestrator - runs the full pipeline
-│   ├── audio.py                 # Audio extraction from video
-│   ├── transcribe.py            # Whisper model loading & transcription
-│   ├── srt.py                   # SRT subtitle file generation
-│   └── burn.py                  # FFmpeg subtitle burning into video
-└── Subtitle generator.py        # Standalone CLI script
+    ├── __init__.py              # Re-exports SubtitleEngine
+    ├── engine.py                # Orchestrator - runs the full pipeline
+    ├── audio.py                 # Audio extraction from video
+    ├── transcribe.py            # Whisper model loading & transcription
+    ├── srt.py                   # SRT subtitle file generation
+    └── burn.py                  # FFmpeg subtitle burning into video
 ```
 
 ---
