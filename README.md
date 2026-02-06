@@ -26,7 +26,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 ## 📁 Project Structure
 
 ```graphql
-│
+
 ├── subtitle_gui.py              # GUI layout, event handlers & entry point
 ├── config/
 │   ├── __init__.py              # Re-exports settings
