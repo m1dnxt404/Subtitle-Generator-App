@@ -3,8 +3,9 @@ from tkinter import filedialog, messagebox, ttk
 import os
 import sys
 import threading
+
 from config import MODEL_OPTIONS, SUPPORTED_VIDEO_FORMATS, WINDOW_TITLE, WINDOW_SIZE, LANGUAGE_OPTIONS
-from subtitle_engine import SubtitleEngine
+from engine import SubtitleEngine
 
 
 class SubtitleApp:
@@ -189,7 +190,7 @@ class SubtitleApp:
             wrap="word",
             state="disabled",
             bg="#1e1e1e",
-            fg="#cccccc",
+            fg="#ffffff",
             font=("Consolas", 9)
         )
         self.log_text.pack(side="left", fill="both", expand=True)
@@ -360,9 +361,3 @@ class SubtitleApp:
     def _on_error(self, error_msg):
         self._set_controls_locked(False)
         messagebox.showerror("Error", error_msg)
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = SubtitleApp(root)
-    root.mainloop()
