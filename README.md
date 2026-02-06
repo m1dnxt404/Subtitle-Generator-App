@@ -20,7 +20,6 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 - 📊 Determinate progress bar (percentage)
 - 🛑 Stop process at any time
 - 🖥 GUI (Tkinter)
-- 🪟 Portable Windows executable (no installation required)
 
 ---
 
@@ -157,6 +156,7 @@ The executable will be generated in the `dist/` folder.
 - GPU (CUDA) acceleration
 - Batch processing for multiple videos
 - Custom subtitle styling (font, size, color)
+- 🪟 Portable Windows executable (no installation required)
 - Web-based interface
 
 ---
