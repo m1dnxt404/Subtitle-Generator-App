@@ -6,6 +6,7 @@ import pysrt
 import os
 import sys
 import threading
+import subprocess
 
 
 # Model	 | Parameters  | Relative Speed |
@@ -27,7 +28,7 @@ class SubtitleApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Video Subtitle Generator (Translate to English)")
-        self.root.geometry("550x600")
+        self.root.geometry("550x670")
         self.root.resizable(False, False)
         self.original_stdout = sys.stdout
 
@@ -93,14 +94,37 @@ class SubtitleApp:
         )
         self.model_combo.pack(side="left")
 
+        # Output options checkboxes
+        options_frame = tk.LabelFrame(root, text="Output Options", padx=10, pady=5)
+        options_frame.pack(pady=10, padx=15, fill="x")
+
+        self.srt_var = tk.BooleanVar(value=True)
+        self.burn_var = tk.BooleanVar(value=False)
+
+        self.srt_check = tk.Checkbutton(
+            options_frame,
+            text="Generate SRT file",
+            variable=self.srt_var,
+            command=self._validate_options
+        )
+        self.srt_check.pack(anchor="w")
+
+        self.burn_check = tk.Checkbutton(
+            options_frame,
+            text="Burn subtitles into video",
+            variable=self.burn_var,
+            command=self._validate_options
+        )
+        self.burn_check.pack(anchor="w")
+
         self.generate_btn = tk.Button(
             root,
-            text="Generate English Subtitles",
+            text="Generate",
             command=self.start_generation,
             width=35,
             state="disabled"
         )
-        self.generate_btn.pack(pady=15)
+        self.generate_btn.pack(pady=10)
 
         # Progress bar
         self.progress_var = tk.DoubleVar(value=0)
@@ -174,6 +198,12 @@ class SubtitleApp:
         if status_text:
             self.status_label.config(text=status_text)
 
+    def _validate_options(self):
+        if self.video_path and (self.srt_var.get() or self.burn_var.get()):
+            self.generate_btn.config(state="normal")
+        else:
+            self.generate_btn.config(state="disabled")
+
     def select_video(self):
         file_path = filedialog.askopenfilename(
             filetypes=[
@@ -186,7 +216,7 @@ class SubtitleApp:
             self.video_path = file_path
             self.video_var.set(os.path.basename(file_path))
             self.video_entry.config(fg="black")
-            self.generate_btn.config(state="normal")
+            self._validate_options()
 
     def select_output(self):
         folder = filedialog.askdirectory()
@@ -196,11 +226,17 @@ class SubtitleApp:
             self.output_entry.config(fg="black")
 
     def start_generation(self):
+        if not self.srt_var.get() and not self.burn_var.get():
+            messagebox.showwarning("No option selected", "Please select at least one output option.")
+            return
+
         self._stop_event.clear()
         self.generate_btn.config(state="disabled")
         self.select_btn.config(state="disabled")
         self.output_btn.config(state="disabled")
         self.model_combo.config(state="disabled")
+        self.srt_check.config(state="disabled")
+        self.burn_check.config(state="disabled")
         self.stop_btn.config(state="normal")
         self.progress_var.set(0)
         self.progress_label.config(text="0%")
@@ -215,6 +251,9 @@ class SubtitleApp:
 
     def generate_subtitles(self):
         audio_path = "temp_audio.wav"
+        do_srt = self.srt_var.get()
+        do_burn = self.burn_var.get()
+
         try:
             # Extract audio (0% -> 10%)
             self._update_progress(0, "Extracting audio...")
@@ -237,56 +276,106 @@ class SubtitleApp:
             if self._stop_event.is_set():
                 raise InterruptedError("Process stopped by user.")
 
-            # Transcribe & translate (25% -> 80%)
+            # Transcribe & translate (25% -> 70%)
             self._update_progress(25, "Transcribing & translating...")
             print("Transcribing & translating...")
             result = model.transcribe(
                 audio_path,
-                task="translate",  # 👈 AUTO translate to English
+                task="translate",
                 beam_size=5,
-                verbose=True         # 👈 Shows progress during transcription
+                verbose=True
             )
-            self._update_progress(80)
+            self._update_progress(70)
 
             if self._stop_event.is_set():
                 raise InterruptedError("Process stopped by user.")
 
-            # Create SRT (80% -> 100%)
-            self._update_progress(80, "Writing subtitle file...")
+            # Build SRT content (70% -> 80%)
+            self._update_progress(70, "Building subtitle data...")
             video_name = os.path.splitext(os.path.basename(self.video_path))[0]
             if self.output_dir:
                 srt_path = os.path.join(self.output_dir, video_name + ".srt")
             else:
                 srt_path = os.path.splitext(self.video_path)[0] + ".srt"
-            subs = pysrt.SubRipFile()
-            index = 1
 
+            subs = pysrt.SubRipFile()
             segments = result["segments"]
             total = len(segments)
-            print(f"Generating subtitle file... ({total} segments)")
+            print(f"Processing segments... ({total} segments)")
             for i, segment in enumerate(segments):
                 if self._stop_event.is_set():
                     raise InterruptedError("Process stopped by user.")
-                start = segment["start"]
-                end = segment["end"]
-                text = segment["text"].strip()
-
                 subs.append(
                     pysrt.SubRipItem(
-                        index=index,
-                        start=pysrt.SubRipTime(seconds=start),
-                        end=pysrt.SubRipTime(seconds=end),
-                        text=text
+                        index=i + 1,
+                        start=pysrt.SubRipTime(seconds=segment["start"]),
+                        end=pysrt.SubRipTime(seconds=segment["end"]),
+                        text=segment["text"].strip()
                     )
                 )
-                index += 1
-                self._update_progress(80 + (i + 1) / total * 20)
+                self._update_progress(70 + (i + 1) / total * 10)
 
+            # Save SRT file (always needed for burn, optionally kept)
             subs.save(srt_path, encoding="utf-8")
+            self._update_progress(80)
+
+            if self._stop_event.is_set():
+                raise InterruptedError("Process stopped by user.")
+
+            # Burn subtitles into video (80% -> 95%)
+            output_video_path = None
+            if do_burn:
+                self._update_progress(80, "Burning subtitles into video...")
+                print("Burning subtitles into video (ffmpeg)...")
+
+                ext = os.path.splitext(self.video_path)[1]
+                if self.output_dir:
+                    output_video_path = os.path.join(
+                        self.output_dir, video_name + "_subtitled" + ext
+                    )
+                else:
+                    output_video_path = os.path.splitext(self.video_path)[0] + "_subtitled" + ext
+
+                # Use ffmpeg to burn subtitles
+                srt_escaped = srt_path.replace("\\", "/").replace(":", "\\:")
+                cmd = [
+                    "ffmpeg", "-y",
+                    "-i", self.video_path,
+                    "-vf", f"subtitles='{srt_escaped}'",
+                    "-c:a", "copy",
+                    output_video_path
+                ]
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                for line in process.stdout:
+                    if self._stop_event.is_set():
+                        process.kill()
+                        raise InterruptedError("Process stopped by user.")
+                    line = line.strip()
+                    if line.startswith("frame="):
+                        print(line)
+                process.wait()
+
+                if process.returncode != 0:
+                    raise RuntimeError("ffmpeg failed to burn subtitles. Make sure ffmpeg is installed and in PATH.")
+
+                print("Subtitles burned successfully.")
+                self._update_progress(95)
+
+            # Clean up SRT if user only wanted burn
+            if not do_srt and do_burn:
+                os.remove(srt_path)
+                srt_path = None
+
             os.remove(audio_path)
             self._update_progress(100, "Complete!")
 
-            self.root.after(0, self.on_success, srt_path, result["language"])
+            self.root.after(0, self.on_success, srt_path, output_video_path, result["language"])
 
         except InterruptedError:
             print("Process stopped.")
@@ -305,16 +394,20 @@ class SubtitleApp:
         self.output_btn.config(state="normal")
         self.stop_btn.config(state="disabled")
         self.model_combo.config(state="readonly")
+        self.srt_check.config(state="normal")
+        self.burn_check.config(state="normal")
 
-    def on_success(self, srt_path, language):
+    def on_success(self, srt_path, output_video_path, language):
         self._reset_controls()
         self.status_label.config(
-            text=f"✅ Done! Detected language: {language}"
+            text=f"Done! Detected language: {language}"
         )
-        messagebox.showinfo(
-            "Success",
-            f"Subtitle file created:\n{srt_path}"
-        )
+        msg_parts = []
+        if srt_path:
+            msg_parts.append(f"SRT file:\n{srt_path}")
+        if output_video_path:
+            msg_parts.append(f"Video with subtitles:\n{output_video_path}")
+        messagebox.showinfo("Success", "\n\n".join(msg_parts))
 
     def on_stopped(self):
         self._reset_controls()
