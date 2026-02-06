@@ -71,7 +71,7 @@ pip install pyinstaller
 ## ▶️ Running the Application
 
 ```bash
-python subtitle_gui.py
+python app.py
 ```
 
 ---
@@ -136,7 +136,7 @@ You can package the application into a portable Windows executable using PyInsta
 ### Build EXE
 
 ```bash
-pyinstaller --onefile --windowed subtitle_gui.py
+pyinstaller --onefile --windowed app.py
 ```
 
 The executable will be generated in the `dist/` folder.
