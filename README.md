@@ -18,7 +18,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 - 🔤 Choose target language from a dropdown
 - 📊 Determinate progress bar (percentage)
 - 🛑 Stop process at any time
-- 🖥 GUI (Tkinter)
+- 🖥 Modern dark-themed GUI (CustomTkinter)
 
 ---
 
@@ -57,7 +57,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 ## ⚙️ Install Dependencies
 
 ```bash
-pip install openai-whisper moviepy pysrt deep-translator
+pip install openai-whisper moviepy pysrt deep-translator customtkinter
 ```
 
 Optional (for building a portable `.exe`):
@@ -76,18 +76,20 @@ python app.py
 
 ---
 
-## 🖥 GUI Capabilities
+## 🖥 GUI
 
-The GUI allows you to:
+The application features a modern **dark-themed** interface built with [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter), including:
 
+- Card-style layout with rounded corners
 - Select a video file (mp4, mkv, avi, mov, flv, wmv, webm, m4v, mpg, mpeg, 3gp, ts)
 - Choose a Whisper model size (tiny → large)
 - Choose a target language (English, Spanish, French, etc.)
 - Toggle **Generate SRT file**
 - Toggle **Burn subtitles into video**
 - Or select **both** at the same time
-- View real-time progress (percentage)
+- Real-time progress bar with status updates
 - Stop the process at any time
+- Dark terminal-style log viewer
 
 ---
 
@@ -166,6 +168,7 @@ The executable will be generated in the `dist/` folder.
 ## 🙌 Acknowledgements
 
 - [OpenAI Whisper](https://github.com/openai/whisper)
+- [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)
 - [FFmpeg](https://ffmpeg.org/)
 - [MoviePy](https://zulko.github.io/moviepy/)
 - [deep-translator](https://github.com/nidhaloff/deep-translator)
