@@ -36,4 +36,4 @@ LANGUAGE_OPTIONS = {
 }
 
 WINDOW_TITLE = "Video Subtitle Generator"
-WINDOW_SIZE = "550x710"
+WINDOW_SIZE = "620x800"
