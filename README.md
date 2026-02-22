@@ -16,6 +16,7 @@ A Python application that automatically **generates subtitles (SRT)** from any v
 - 📄 Generates `.srt` subtitle files
 - 🎥 Burns subtitles directly into video (via FFmpeg)
 - 🔤 Choose target language from a dropdown
+- 🎨 Subtitle styling — font picker, text color picker, background box toggle
 - 📊 Determinate progress bar (percentage)
 - 🛑 Stop process at any time
 - 🖥 Modern dark-themed GUI (CustomTkinter)
@@ -87,6 +88,10 @@ The application features a modern **dark-themed** interface built with [CustomTk
 - Toggle **Generate SRT file**
 - Toggle **Burn subtitles into video**
 - Or select **both** at the same time
+- **Subtitle Style** panel:
+  - Font picker — searchable dropdown of all installed system fonts
+  - Text color picker — OS color dialog with live swatch preview
+  - Background box toggle — adds a semi-transparent box behind subtitles
 - Real-time progress bar with status updates
 - Stop the process at any time
 - Dark terminal-style log viewer
@@ -159,7 +164,7 @@ The executable will be generated in the `dist/` folder.
 
 - GPU (CUDA) acceleration
 - Batch processing for multiple videos
-- Custom subtitle styling (font, size, color)
+- Additional subtitle styling (opacity, line spacing, shadow strength)
 - 🪟 Portable Windows executable (no installation required)
 - Web-based interface
 
