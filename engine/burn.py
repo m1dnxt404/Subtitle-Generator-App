@@ -2,17 +2,22 @@ import subprocess
 
 
 def burn_subtitles(video_path, srt_path, output_video_path,
-                   progress_callback=None, stop_check=None):
+                   progress_callback=None, stop_check=None, font_name=None):
     """Burn an SRT subtitle file into a video using ffmpeg."""
     if progress_callback:
         progress_callback(80, "Burning subtitles into video...")
     print("Burning subtitles into video (ffmpeg)...")
 
     srt_escaped = srt_path.replace("\\", "/").replace(":", "\\:")
+    vf_filter = f"subtitles='{srt_escaped}'"
+    if font_name:
+        safe_font = font_name.replace("'", "").replace("\\", "")
+        vf_filter += f":force_style='FontName={safe_font}'"
+
     cmd = [
         "ffmpeg", "-y",
         "-i", video_path,
-        "-vf", f"subtitles='{srt_escaped}'",
+        "-vf", vf_filter,
         "-c:a", "copy",
         output_video_path
     ]

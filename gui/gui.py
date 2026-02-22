@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
+from tkinter.font import families as tk_font_families
 import os
 import sys
 import threading
@@ -24,6 +25,7 @@ class SubtitleApp:
         self._build_file_selection()
         self._build_settings()
         self._build_output_options()
+        self._build_subtitle_style()
         self._build_generate_button()
         self._build_progress_section()
         self._build_log_section()
@@ -188,6 +190,38 @@ class SubtitleApp:
             font=ctk.CTkFont(size=13),
         )
         self.burn_check.pack(anchor="w")
+
+    def _build_subtitle_style(self):
+        card = ctk.CTkFrame(self.root, corner_radius=10)
+        card.pack(fill="x", padx=20, pady=5)
+
+        ctk.CTkLabel(
+            card,
+            text="Subtitle Style",
+            font=ctk.CTkFont(size=13, weight="bold"),
+        ).pack(anchor="w", padx=16, pady=(12, 8))
+
+        style_grid = ctk.CTkFrame(card, fg_color="transparent")
+        style_grid.pack(fill="x", padx=16, pady=(0, 14))
+        style_grid.columnconfigure(1, weight=1)
+
+        ctk.CTkLabel(
+            style_grid,
+            text="Font:",
+            font=ctk.CTkFont(size=13),
+        ).grid(row=0, column=0, sticky="w", padx=(0, 12))
+
+        system_fonts = sorted(set(tk_font_families()))
+        default_font = "Arial" if "Arial" in system_fonts else system_fonts[0]
+
+        self.font_var = ctk.StringVar(value=default_font)
+        self.font_combo = ctk.CTkComboBox(
+            style_grid,
+            variable=self.font_var,
+            values=system_fonts,
+            height=32,
+        )
+        self.font_combo.grid(row=0, column=1, sticky="ew")
 
     def _build_generate_button(self):
         self.generate_btn = ctk.CTkButton(
@@ -370,7 +404,8 @@ class SubtitleApp:
                 target_language=LANGUAGE_OPTIONS[self.lang_var.get()],
                 output_video_path=output_video_path if do_burn else None,
                 do_srt=do_srt,
-                do_burn=do_burn
+                do_burn=do_burn,
+                subtitle_font=self.font_var.get() or None,
             )
             self.root.after(
                 0, self._on_success, srt_path, output_video_path, language
@@ -396,6 +431,7 @@ class SubtitleApp:
         self.burn_check.configure(state=state)
         self.model_combo.configure(state=state)
         self.lang_combo.configure(state=state)
+        self.font_combo.configure(state=state)
         self.stop_btn.configure(state=stop_state)
 
         if locked:
