@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
+from tkinter.colorchooser import askcolor
 from tkinter.font import families as tk_font_families
 import os
 import sys
@@ -205,6 +206,7 @@ class SubtitleApp:
         style_grid.pack(fill="x", padx=16, pady=(0, 14))
         style_grid.columnconfigure(1, weight=1)
 
+        # ── Font row ──
         ctk.CTkLabel(
             style_grid,
             text="Font:",
@@ -222,6 +224,37 @@ class SubtitleApp:
             height=32,
         )
         self.font_combo.grid(row=0, column=1, sticky="ew")
+
+        # ── Text color row ──
+        ctk.CTkLabel(
+            style_grid,
+            text="Text Color:",
+            font=ctk.CTkFont(size=13),
+        ).grid(row=1, column=0, sticky="w", padx=(0, 12), pady=(8, 0))
+
+        self.primary_color_hex = "#FFFFFF"
+        self.color_btn = ctk.CTkButton(
+            style_grid,
+            text=self.primary_color_hex,
+            width=130,
+            height=32,
+            fg_color=self.primary_color_hex,
+            hover_color=self.primary_color_hex,
+            text_color="#000000",
+            corner_radius=6,
+            command=self._pick_color,
+        )
+        self.color_btn.grid(row=1, column=1, sticky="w", pady=(8, 0))
+
+        # ── Background box row ──
+        self.bg_box_var = ctk.BooleanVar(value=False)
+        self.bg_check = ctk.CTkCheckBox(
+            style_grid,
+            text="Background box",
+            variable=self.bg_box_var,
+            font=ctk.CTkFont(size=13),
+        )
+        self.bg_check.grid(row=2, column=0, columnspan=2, sticky="w", pady=(10, 0))
 
     def _build_generate_button(self):
         self.generate_btn = ctk.CTkButton(
@@ -328,6 +361,29 @@ class SubtitleApp:
         else:
             self.generate_btn.configure(state="disabled")
 
+    def _pick_color(self):
+        result = askcolor(color=self.primary_color_hex, title="Choose Subtitle Color")
+        if result and result[1]:
+            self.primary_color_hex = result[1].upper()
+            r = int(self.primary_color_hex[1:3], 16)
+            g = int(self.primary_color_hex[3:5], 16)
+            b = int(self.primary_color_hex[5:7], 16)
+            brightness = (r * 299 + g * 587 + b * 114) / 1000
+            text_color = "#000000" if brightness > 128 else "#FFFFFF"
+            self.color_btn.configure(
+                fg_color=self.primary_color_hex,
+                hover_color=self.primary_color_hex,
+                text=self.primary_color_hex,
+                text_color=text_color,
+            )
+
+    @staticmethod
+    def _hex_to_ass(hex_color):
+        """Convert #RRGGBB to ASS &H00BBGGRR format used by FFmpeg."""
+        h = hex_color.lstrip("#")
+        r, g, b = h[0:2], h[2:4], h[4:6]
+        return f"&H00{b}{g}{r}".upper()
+
     def select_video(self):
         file_path = filedialog.askopenfilename(
             filetypes=[
@@ -406,6 +462,8 @@ class SubtitleApp:
                 do_srt=do_srt,
                 do_burn=do_burn,
                 subtitle_font=self.font_var.get() or None,
+                primary_color=self._hex_to_ass(self.primary_color_hex),
+                background_box=self.bg_box_var.get(),
             )
             self.root.after(
                 0, self._on_success, srt_path, output_video_path, language
@@ -432,6 +490,8 @@ class SubtitleApp:
         self.model_combo.configure(state=state)
         self.lang_combo.configure(state=state)
         self.font_combo.configure(state=state)
+        self.color_btn.configure(state=state)
+        self.bg_check.configure(state=state)
         self.stop_btn.configure(state=stop_state)
 
         if locked:

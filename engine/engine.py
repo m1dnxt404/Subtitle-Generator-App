@@ -22,7 +22,8 @@ class SubtitleEngine:
 
     def generate(self, video_path, model_size, srt_path,
                  target_language="en", output_video_path=None,
-                 do_srt=True, do_burn=False, subtitle_font=None):
+                 do_srt=True, do_burn=False, subtitle_font=None,
+                 primary_color=None, background_box=False):
         """Run the full generation pipeline.
 
         Args:
@@ -52,6 +53,8 @@ class SubtitleEngine:
                 burn_subtitles(
                     video_path, srt_path, output_video_path, cb, sc,
                     font_name=subtitle_font,
+                    primary_color=primary_color,
+                    background_box=background_box,
                 )
 
             if not do_srt and do_burn:
